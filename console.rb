@@ -1,31 +1,23 @@
-require ("pg")
+require("pry-byebug")
+require_relative('models/property_tracker')
 
-class Property
 
-attr_accessor :number_of_bedrooms, :year_built, :status, :build
-
-def initialize(options)
-  @id = options["id"].to_i() if options["id"]
-@number_of_bedrooms=options["number_of_bedrooms"].to_i()
-@year_built=options["year_built"]
-@status=options["status"]
-@build=options["build"]
-end
-
-  def save()
-db=PG.connect({
-    dbname: "property_tracker",
-    host:"localhost"
+house1 = Property.new({
+  "number_of_bedrooms" => "3",
+  "year_built" => "2010",
+  "status" => "let",
+  "build" => "flat"
   })
-  sql="INSERT INTO properties
-    (number_of_bedrooms,year_built,status,build) VALUES
-    ($1,$2,$3,$4) RETURNING id"
-    values=[@number_of_bedrooms,@year_built,@status,@build]
-    db.prepare("save",sql)
-    @iq=db.exec_prepared("save",values).first()["id"].to_i
-    db.close()
-  end
+  house1.save()
+
+house2 = Property.new({
+  "number_of_bedrooms" => "5",
+  "year_built" => "2020",
+  "status" => "buy",
+  "build" => "house"
+  })
+house2.save()
 
 
-
-end
+binding.pry
+nil
