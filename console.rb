@@ -1,6 +1,6 @@
 require("pry-byebug")
 require_relative('models/property_tracker')
-
+Property.delete_all()
 
 house1 = Property.new({
   "number_of_bedrooms" => "3",
