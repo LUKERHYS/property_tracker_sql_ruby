@@ -47,10 +47,23 @@ end
       sql = "UPDATE properties
       SET
       (number_of_bedrooms, year_built, status, build)= ($1,$2,$3,$4) WHERE id=$5"
-      values=[@number_of_bedrooms,@year_built,@status,@build,@id]
-      db.prepare("update",sql)
-      db.exec_prepared("update",values)
+      values = [@number_of_bedrooms,@year_built,@status,@build,@id]
+      db.prepare("update", sql)
+      db.exec_prepared("update", values)
       db.close()
+    end
+
+    def Property.find(id)
+      db = PG.connect({
+      dbname: "property_tracker",
+      host: "localhost"
+    })
+    sql = "SELECT FROM properties WHERE id = $1"
+    values = [id]
+    db.prepare("find", sql)
+    houses = db.exec_prepared("find", values)
+    db.close()
+    return houses.map{ |house| Property.new(house) }
     end
 
   def Property.all()
@@ -62,16 +75,16 @@ end
       db.prepare("all", sql)
       houses = db.exec_prepared("all")
       db.close()
-      return houses.map{|house| Property.new(house)}
+      return houses.map{ |house| Property.new(house) }
   end
 
-  def Property.delete_all
+  def Property.delete_all()
     db = PG.connect({
       dbname: "property_tracker",
       host: "localhost"
       })
       sql="DELETE FROM properties"
-      db.prepare("delete_all",sql)
+      db.prepare("delete_all", sql)
       houses=db.exec_prepared("delete_all")
       db.close()
   end
